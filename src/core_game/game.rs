@@ -16,6 +16,8 @@ pub struct Game {
     last_update : u128,
 }
 
+
+
 impl Game {
 
     pub fn new( width : usize,height : usize,width_w : usize , height_w : usize) -> Self {
@@ -31,6 +33,9 @@ impl Game {
         }
     }
 
+
+
+
     pub fn generate(&mut self) {
         for i in 0..self.height {
             for j in 0..self.width {
@@ -38,8 +43,7 @@ impl Game {
             }
         }
     }
-
-
+    
     pub fn update(&mut self){
         let mut new_matrix = vec![vec![0; self.width]; self.height];
         for i in 0..self.height {
@@ -75,6 +79,8 @@ impl Game {
             println!("");
         }
     }
+
+
 
     
     pub fn print(&self) {
@@ -114,13 +120,22 @@ impl Game {
             if let Some(Button::Keyboard(Key::Space)) = event.press_args() {
                 if self.last_update ==0 {
                     self.last_update = 1;
+                    window.set_title("Game of life".to_string());
                 } else {
                     self.last_update = 0;
+                    //set title to pause
+                    window.set_title("Game of life - PAUSE".to_string());
                 }
             }
+            // press c to clear the matrix
+            if let Some(Button::Keyboard(Key::C)) = event.press_args() {
+                self.matrix = vec![vec![0; self.width]; self.height];
+            }
+            
             if self.last_update < time::SystemTime::now().duration_since(time::UNIX_EPOCH).unwrap().as_millis() && self.last_update != 0 {
                 self.update();
                 self.last_update = time::SystemTime::now().duration_since(time::UNIX_EPOCH).unwrap().as_millis() + 100;
+                
             }
             window.draw_2d(&event, |context, graphics, _device| {
                 clear([0.0,0.0,0.0,1.0], graphics);
